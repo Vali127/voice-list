@@ -17,3 +17,16 @@ fun relativeDateLabel(timestampMillis: Long): String {
     val formatter = SimpleDateFormat("d MMMM", Locale.getDefault())
     return formatter.format(Date(timestampMillis))
 }
+
+fun relativeTimeLabel(timestampMillis: Long): String {
+    val diffMillis = System.currentTimeMillis() - timestampMillis
+    val diffMinutes = diffMillis / (1000 * 60)
+    val diffHours = diffMinutes / 60
+
+    return when {
+        diffMinutes < 1 -> "Just now"
+        diffMinutes < 60 -> "$diffMinutes min ago"
+        diffHours < 24 -> "${diffHours}h ago"
+        else -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestampMillis))
+    }
+}

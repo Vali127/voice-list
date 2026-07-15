@@ -1,5 +1,7 @@
 package com.mananasy.voiceList.core.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.History
@@ -11,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -43,6 +46,7 @@ fun MainScaffold(navController: NavHostController, content: @Composable (android
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.statusBars,
         bottomBar = {
             if (shouldShowBottomBar) {
                 NavigationBar {

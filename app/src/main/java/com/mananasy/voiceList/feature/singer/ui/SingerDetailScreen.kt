@@ -99,6 +99,24 @@ fun SingerDetailScreen(singerId: Int, navController: NavHostController) {
                                 )
                             }
 
+                            // GRADIENT DU HAUT : Gomme la séparation nette en haut en la fusionnant avec le fond
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.background, // Cache complètement le bord supérieur
+                                                MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                                Color.Transparent
+                                            ),
+                                            startY = 0f,
+                                            endY = 180f // Transition rapide pour ne pas masquer tout l'écran
+                                        )
+                                    )
+                            )
+
+                            // GRADIENT DU BAS
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -198,6 +216,7 @@ fun SingerDetailScreen(singerId: Int, navController: NavHostController) {
                 }
             }
 
+            // TopAppBar ajustée pour un affichage standard (sans Edge-to-Edge)
             val solidColor = MaterialTheme.colorScheme.background
             Box(
                 modifier = Modifier
@@ -205,11 +224,12 @@ fun SingerDetailScreen(singerId: Int, navController: NavHostController) {
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                solidColor.copy(alpha = topBarAlpha.coerceAtLeast(0.5f)),
+                                solidColor.copy(alpha = topBarAlpha.coerceAtLeast(0.3f)),
                                 solidColor.copy(alpha = topBarAlpha)
                             )
                         )
                     )
+                // .statusBarsPadding() a été retiré d'ici pour que la barre remonte à sa position normale tout en haut
             ) {
                 TopAppBar(
                     title = {
@@ -267,6 +287,7 @@ fun FlowRowTags(tags: List<String>) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         tags.forEach { tag ->
+            Spacer(modifier = Modifier.width(0.dp))
             Spacer(modifier = Modifier.width(0.dp))
             AssistChip(onClick = {}, label = { Text(tag) })
         }

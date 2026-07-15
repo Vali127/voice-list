@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mananasy.voiceList.core.di.AppContainer
-import com.mananasy.voiceList.core.ui.EmptyState // Importation de ton composant EmptyState
+import com.mananasy.voiceList.core.ui.EmptyState
 import com.mananasy.voiceList.feature.singer.ui.SingerPhoto
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -37,7 +37,7 @@ fun FavoritesScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
-            .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 16.dp)
     ) {
 
         Row(

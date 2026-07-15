@@ -16,11 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mananasy.voiceList.core.di.AppContainer
-import com.mananasy.voiceList.core.ui.EmptyState // Import de ton composant EmptyState
+import com.mananasy.voiceList.core.ui.EmptyState
 import com.mananasy.voiceList.core.util.relativeDateLabel
+import com.mananasy.voiceList.core.util.relativeTimeLabel
 import com.mananasy.voiceList.feature.history.data.SingerHistoryEntry
 import com.mananasy.voiceList.feature.singer.ui.SingerPhoto
 
@@ -33,13 +35,22 @@ fun HistoryScreen(navController: NavHostController) {
     )
 
     val history by viewModel.history.collectAsState()
-    val grouped = history.groupBy { relativeDateLabel(it.viewedAt) }
+
+    // Regroupe par date, puis ne garde que la visite la plus récente par chanteur
+    val grouped = history
+        .groupBy { relativeDateLabel(it.viewedAt) }
+        .mapValues { (_, entries) ->
+            entries
+                .groupBy { it.singer.id }
+                .map { (_, sameSinger) -> sameSinger.maxBy { it.viewedAt } }
+                .sortedByDescending { it.viewedAt }
+        }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
-            .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 16.dp)
     ) {
 
         Row(
@@ -117,21 +128,36 @@ fun HistoryRow(entry: SingerHistoryEntry, onClick: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.MusicNote,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(16.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MusicNote,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = entry.singer.name,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        maxLines = 1
+                    )
+                }
+
                 Text(
-                    text = entry.singer.name,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
+                    text = relativeTimeLabel(entry.viewedAt),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Light,
+                        fontSize = 11.sp
                     ),
-                    maxLines = 1
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
