@@ -154,13 +154,13 @@ fun SingerListScreen(navController: NavHostController) {
 fun SingerPhoto(photo: String?, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
         if (photo != null) {
             Image(
-                painter = rememberAsyncImagePainter(photo),
+                painter = rememberAsyncImagePainter(model = java.io.File(photo)),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

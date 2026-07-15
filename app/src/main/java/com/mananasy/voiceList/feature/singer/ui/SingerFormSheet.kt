@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.rememberAsyncImagePainter
+import com.mananasy.voiceList.core.util.ImageStorage
 import com.mananasy.voiceList.feature.singer.data.Singer
 
 @Composable
@@ -49,10 +50,15 @@ fun SingerFormSheet(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            context.contentResolver.takePersistableUriPermission(
-                it, Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-            photoUri = it.toString()
+            val oldPhoto = photoUri
+            val savedPath = ImageStorage.copyToAppStorage(context, it)
+            if (savedPath != null) {
+                photoUri = savedPath
+                //clean old photo
+                if (oldPhoto != null && oldPhoto != savedPath) {
+                    ImageStorage.deleteImage(oldPhoto)
+                }
+            }
         }
     }
 
@@ -177,7 +183,10 @@ fun SingerFormSheet(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable(enabled = hasPhoto) { photoUri = null }
+                                .clickable(enabled = hasPhoto) {
+                                    ImageStorage.deleteImage(photoUri)
+                                    photoUri = null
+                                }
                                 .padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
