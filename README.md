@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
-  <img src="https://img.shields.io/badge/version-1.0.0-informational" alt="Version">
+  <img src="https://img.shields.io/github/v/tag/Vali127/voice-list?label=version" alt="Version">
 </p>
 
 A small mobile development project built with **Kotlin** and **Jetpack Compose** to manage a personal list of singers.
