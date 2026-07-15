@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -27,7 +29,19 @@ jobs:
       - name: Grant Execute Permission to Gradlew
         run: chmod +x gradlew
 
+      
+      - name: Generate Version Code
+        id: version_step
+        run: |
+          VERSION_CODE=$(git rev-list --count HEAD)
+          echo "Generated Version Code: $VERSION_CODE"
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
+      
       - name: Build Debug APK
+        env:
+          ANDROID_VERSION_CODE: ${{ env.VERSION_CODE }}
+          ANDROID_VERSION_NAME: ${{ github.ref_name }}
         run: ./gradlew assembleDebug
 
       - name: Rename APK

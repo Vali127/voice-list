@@ -11,11 +11,16 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.mananasy.kashu"
+        applicationId = "com.mananasy.voiceList"
         minSdk = 23
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+
+        val envVersionCode = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionCode = envVersionCode
+
+        val envVersionName = System.getenv("ANDROID_VERSION_NAME") ?: "1.0.0-local"
+        versionName = envVersionName
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

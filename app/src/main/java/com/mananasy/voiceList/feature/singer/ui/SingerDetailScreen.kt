@@ -99,19 +99,18 @@ fun SingerDetailScreen(singerId: Int, navController: NavHostController) {
                                 )
                             }
 
-                            // GRADIENT DU HAUT : Gomme la séparation nette en haut en la fusionnant avec le fond
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .background(
                                         Brush.verticalGradient(
                                             colors = listOf(
-                                                MaterialTheme.colorScheme.background, // Cache complètement le bord supérieur
+                                                MaterialTheme.colorScheme.background,
                                                 MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
                                                 Color.Transparent
                                             ),
                                             startY = 0f,
-                                            endY = 180f // Transition rapide pour ne pas masquer tout l'écran
+                                            endY = 180f
                                         )
                                     )
                             )
