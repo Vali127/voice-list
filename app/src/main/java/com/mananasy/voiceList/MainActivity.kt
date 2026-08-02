@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.mananasy.voiceList.core.ui.MainScaffold
 import com.mananasy.voiceList.navigation.AppNavGraph
@@ -15,6 +16,7 @@ import com.mananasy.voiceList.navigation.AppNavGraph
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.padding(top = 0.dp)) {
