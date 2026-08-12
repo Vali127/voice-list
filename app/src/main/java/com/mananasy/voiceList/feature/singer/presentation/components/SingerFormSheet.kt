@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
@@ -28,6 +30,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.rememberAsyncImagePainter
 import com.mananasy.voiceList.core.util.ImageStorage
+import com.mananasy.voiceList.core.util.dateMillisToStoredString
+import com.mananasy.voiceList.core.util.displayBirthDate
+import com.mananasy.voiceList.core.util.storedStringToDateMillis
 import com.mananasy.voiceList.feature.singer.domain.entity.Singer
 
 @Composable
@@ -40,9 +45,11 @@ fun SingerFormSheet(
     val context = LocalContext.current
 
     var name by remember { mutableStateOf(singer.name) }
+    var birthDate by remember { mutableStateOf(singer.birthDate) }
     var description by remember { mutableStateOf(singer.description ?: "") }
     var tagsText by remember { mutableStateOf(singer.tags.joinToString(", ")) }
     var photoUri by remember { mutableStateOf(singer.photo) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -103,6 +110,7 @@ fun SingerFormSheet(
                             onSave(
                                 singer.copy(
                                     name = name,
+                                    birthDate = birthDate,
                                     photo = photoUri,
                                     description = description.ifBlank { null },
                                     tags = tagsText.split(",").map { it.trim() }.filter { it.isNotBlank() }
@@ -216,6 +224,51 @@ fun SingerFormSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                val triggerShape = RoundedCornerShape(4.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(triggerShape)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, triggerShape)
+                        .clickable { showDatePicker = true }
+                        .padding(horizontal = 14.dp, vertical = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = birthDate?.let { displayBirthDate(it) } ?: "Choose a date",
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = if (birthDate != null)
+                                MaterialTheme.colorScheme.onSurface
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        if (birthDate != null) {
+                            IconButton(
+                                onClick = { birthDate = null },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Clear birth date",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        Icon(
+                            imageVector = Icons.Filled.DateRange,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
@@ -232,6 +285,35 @@ fun SingerFormSheet(
                     label = { Text("Tags (comma-separated)") },
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+        }
+
+        if (showDatePicker) {
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = storedStringToDateMillis(birthDate),
+                initialDisplayMode = DisplayMode.Picker
+            )
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            datePickerState.selectedDateMillis?.let {
+                                birthDate = dateMillisToStoredString(it)
+                            }
+                            showDatePicker = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
             }
         }
     }

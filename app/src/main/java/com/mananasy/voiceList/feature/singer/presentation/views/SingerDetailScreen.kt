@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.rememberAsyncImagePainter
 import com.mananasy.voiceList.core.ui.EditDeleteMenu
+import com.mananasy.voiceList.core.util.displayBirthDate
 import com.mananasy.voiceList.feature.singer.presentation.components.FlowRowTags
 import com.mananasy.voiceList.feature.singer.presentation.components.SingerFormSheet
 import com.mananasy.voiceList.feature.singer.presentation.components.SingerPhoto
@@ -162,6 +164,25 @@ fun SingerDetailScreen(singerId: Int, navController: NavHostController) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("Favorites")
+                        }
+
+                        s.birthDate?.let { birthDate ->
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Cake,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = displayBirthDate(birthDate) ?: birthDate,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
